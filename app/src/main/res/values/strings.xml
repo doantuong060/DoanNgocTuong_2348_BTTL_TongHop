@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">StudentMVVM_DoanNgocTuong</string>
+    <string name="student_count">%1$d sinh viên</string>
+    <string name="add_student_coming_soon">Chức năng thêm sinh viên sẽ được hoàn thiện</string>
+    <string name="student_detail_title">Thông tin sinh viên</string>
+    <string name="student_detail_message">Họ tên: %1$s\nMSSV: %2$s</string>
+    <string name="delete_student_title">Xác nhận xóa</string>
+    <string name="delete_student_message">Bạn có chắc chắn muốn xóa sinh viên %1$s không?</string>
+    <string name="cancel">Hủy</string>
+    <string name="delete">Xóa</string>
+    <string name="close">Đóng</string>
 </resources>
