@@ -1,3 +1,4 @@
+
 package com.ute.studentmvvm_doanngoctuong.ui
 
 import android.os.Bundle
@@ -8,7 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ute.studentmvvm_doanngoctuong.R
 import com.ute.studentmvvm_doanngoctuong.data.AppDatabase
 import com.ute.studentmvvm_doanngoctuong.databinding.FragmentStudentListBinding
@@ -52,6 +55,7 @@ class StudentListFragment : Fragment() {
         )[StudentViewModel::class.java]
 
         setupRecyclerView()
+        setupSwipeToDelete()
         observeViewModel()
         setupListeners()
     }
@@ -77,9 +81,46 @@ class StudentListFragment : Fragment() {
         }
     }
 
+    // Xóa sinh viên bằng cách vuốt sang trái hoặc phải
+    private fun setupSwipeToDelete() {
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(
+                viewHolder: RecyclerView.ViewHolder,
+                direction: Int
+            ) {
+                val position = viewHolder.bindingAdapterPosition
+
+                if (position != RecyclerView.NO_POSITION) {
+                    val student = studentAdapter.currentList[position]
+                    viewModel.delete(student)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Đã xóa sinh viên ${student.fullName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(
+            binding.rvStudents
+        )
+    }
+
     private fun observeViewModel() {
         viewModel.allStudents.observe(viewLifecycleOwner) { students ->
-
             studentAdapter.submitList(students)
 
             binding.tvStudentCountBadge.text = getString(
@@ -109,11 +150,10 @@ class StudentListFragment : Fragment() {
 
     private fun setupListeners() {
         binding.fabAdd.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.add_student_coming_soon),
-                Toast.LENGTH_SHORT
-            ).show()
+            AddStudentDialogFragment().show(
+                childFragmentManager,
+                "ADD_STUDENT_DIALOG"
+            )
         }
     }
 
