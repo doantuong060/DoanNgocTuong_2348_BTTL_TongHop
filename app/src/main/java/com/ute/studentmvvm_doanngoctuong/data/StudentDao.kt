@@ -14,7 +14,7 @@ interface StudentDao {
 
     // Them mot sinh vien
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStudent(student: Student)
+    suspend fun insertStudent(student: Student): Long
 
     // Them danh sach sinh vien
     @Insert(onConflict = OnConflictStrategy.REPLACE)
